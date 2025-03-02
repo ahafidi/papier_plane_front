@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Papier Plane (Front-End)
+
+Papier Plane is an AI-powered writing assistant built specifically for journalists. It streamlines your creative process and helps you craft compelling stories with ease.
+
+## Features
+
+- **AI-Driven Assistance:** Enhance your storytelling with intelligent content suggestions.
+- **Tailored for Journalists:** Designed to meet the unique needs of professional journalism.
+- **Real-Time Updates:** Uses Server-Sent Events (SSE) for live prompt responses.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+# Start of Selection
+
+- **pnpm:** A package manager is required to install dependencies.
+- **Next.js:** A React framework for building server-side rendered applications.
+- **Tailwind CSS:** For styling the application, providing utility-first CSS classes for rapid UI development.
+
+### Installation
+
+1. **Clone the Repository:**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone git@github.com:ahafidi/papier-plane-front.git
+cd papier-plane-front
 ```
+
+2. **Install Dependencies:**
+
+Run the following command to install required dependencies:
+
+```bash
+pnpm i
+```
+
+3. **Configure Your Environment:**
+
+Copy the example environment file and update it with your configuration values:
+
+```bash
+cp .env.example .env
+```
+
+4. **Run the Server:**
+
+Start the application using Uvicorn:
+
+```bash
+pnpm run dev
+```
+
+## Usage
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Contributions are welcome! If you have suggestions, feature requests, or improvements, please open an issue or submit a pull request.
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
