@@ -1,4 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useArticle } from '@/contexts/article-context'
 import {
   AppWindowIcon,
   CodeIcon,
@@ -9,6 +10,7 @@ import {
 import { Button } from '../ui/button'
 
 export function ArticleOptions() {
+  const { removeCurrent } = useArticle()
   return (
     <div className="flex justify-between w-full border-b pb-3">
       <Tabs defaultValue="preview" className="select-none">
@@ -29,7 +31,7 @@ export function ArticleOptions() {
           <ShareIcon className="h-4 w-4" />
         </Button>
 
-        <Button variant="destructive">
+        <Button variant="destructive" onClick={removeCurrent}>
           <TrashIcon className="h-4 w-4" />
         </Button>
 

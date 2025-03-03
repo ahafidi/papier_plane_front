@@ -14,7 +14,7 @@ interface Message {
 export function ChatPanel() {
   const scrollableDivRef = useRef<HTMLDivElement>(null)
   const [messages, setMessages] = useState<Message[]>([])
-  const { setArticle } = useArticle()
+  const { update } = useArticle()
 
   useEffect(() => {
     if (scrollableDivRef.current) {
@@ -45,7 +45,7 @@ export function ChatPanel() {
 
     // Update the article in the context if it's not empty
     if (article) {
-      setArticle(article)
+      update(article)
       toast.success('Article updated!')
     }
   }

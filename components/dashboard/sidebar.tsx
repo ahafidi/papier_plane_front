@@ -1,8 +1,8 @@
 import { Newspaper, SquarePen } from 'lucide-react'
 
 import { SearchForm } from '@/components/search-form'
+import { useArticle } from '@/contexts/article-context'
 import { Button } from '../ui/button'
-
 const articles = [
   { id: 1, title: "Introduction à l'IA" },
   { id: 2, title: 'Tendances tech 2024' },
@@ -17,19 +17,22 @@ const articles = [
 ]
 
 export function Sidebar() {
+  const { create, list, changeSelection } = useArticle()
+
   return (
     <nav className="flex h-full flex-col gap-4 p-6">
-      <Button variant="outline">
+      <Button variant="outline" onClick={() => create('New article')}>
         <SquarePen className="h-4 w-4" /> Start a new article
       </Button>
 
       <SearchForm />
 
-      {articles.map(({ id, title }) => (
+      {list().map(({ id, title, isSelected }) => (
         <Button
-          variant={id === 1 ? 'secondary' : 'ghost'}
+          variant={isSelected ? 'secondary' : 'ghost'}
           className="w-full justify-start"
           key={id}
+          onClick={() => changeSelection(id)}
         >
           <Newspaper />
           <span>{title}</span>
