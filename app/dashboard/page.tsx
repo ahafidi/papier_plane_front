@@ -8,7 +8,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
-import { ArticleProvider } from '@/contexts/article-context'
+import { ArticleProvider } from '@/contexts/panel-context'
 
 export default function DashboardPage() {
   return (

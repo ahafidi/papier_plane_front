@@ -10,7 +10,7 @@ export function ChatInput({
   onMessageReceived,
   onMessageSubmitted,
 }: {
-  onMessageReceived: (message: string, article: string) => void
+  onMessageReceived: (message: string, title: string, article: string) => void
   onMessageSubmitted: (message: string) => void
 }) {
   const [message, setMessage] = useState('')
@@ -90,11 +90,19 @@ export function ChatInput({
       eventSource.addEventListener('done', (event) => {
         console.log('Stream ended event received:', event)
         try {
-          // console.log(accumulatedResponseRef.current)
+          console.log(accumulatedResponseRef.current)
 
-          const [message, article] = accumulatedResponseRef.current.split('---')
+          const { message, title, article } = JSON.parse(
+            accumulatedResponseRef.current
+          )
+
           accumulatedResponseRef.current = ''
-          onMessageReceived(message?.trim() ?? '', article?.trim() ?? '')
+
+          onMessageReceived(
+            message?.trim() ?? '',
+            title?.trim() ?? '',
+            article?.trim() ?? ''
+          )
         } catch (error) {
           console.error('Error parsing SSE message:', error)
           toast.error('Error processing response (sse.onmessage)')

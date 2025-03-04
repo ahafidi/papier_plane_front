@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { useArticle } from '@/contexts/article-context'
+import { usePanel } from '@/contexts/panel-context'
 import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -11,7 +11,7 @@ import remarkGfm from 'remark-gfm'
 import { ArticleOptions } from './article-options'
 
 export function ArticleCanvas() {
-  const { content } = useArticle()
+  const { article } = usePanel()
 
   const [isClient, setIsClient] = useState(false)
 
@@ -25,7 +25,7 @@ export function ArticleCanvas() {
       <ArticleOptions />
 
       <div className="flex-1 overflow-y-auto mt-3">
-        {isClient && content ? (
+        {isClient && article ? (
           <article className="prose prose-slate dark:prose-invert max-w-none">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
@@ -81,7 +81,7 @@ export function ArticleCanvas() {
                 // TODO: table
               }}
             >
-              {content}
+              {article}
             </ReactMarkdown>
           </article>
         ) : (

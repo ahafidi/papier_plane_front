@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useArticle } from '@/contexts/article-context'
+import { usePanel } from '@/contexts/panel-context'
 import {
   AppWindowIcon,
   CodeIcon,
@@ -10,7 +10,7 @@ import {
 import { Button } from '../ui/button'
 
 export function ArticleOptions() {
-  const { removeCurrent } = useArticle()
+  const { removeCurrent } = usePanel()
   return (
     <div className="flex justify-between w-full border-b pb-3">
       <Tabs defaultValue="preview" className="select-none">
