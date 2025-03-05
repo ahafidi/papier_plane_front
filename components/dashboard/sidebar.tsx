@@ -1,4 +1,4 @@
-import { Newspaper, SquarePen } from 'lucide-react'
+import { Newspaper, Pin, SquarePen } from 'lucide-react'
 
 import { SearchForm } from '@/components/search-form'
 import { usePanel } from '@/contexts/panel-context'
@@ -15,19 +15,38 @@ export function Sidebar() {
 
       <SearchForm />
 
-      {list().map(({ id, title, isSelected }) => (
-        <Button
-          variant={isSelected ? 'secondary' : 'ghost'}
-          className="w-full justify-start"
-          key={id}
-          onClick={() => changeSelection(id)}
-        >
-          <Newspaper />
-          <span className="ml-2 truncate overflow-hidden text-ellipsis">
-            {title}
-          </span>
-        </Button>
-      ))}
+      {list()
+        .filter(({ isPinned }) => isPinned)
+        .map(({ id, title, isSelected }) => (
+          <Button
+            variant={isSelected ? 'secondary' : 'ghost'}
+            className="w-full justify-between"
+            key={id}
+            onClick={() => changeSelection(id)}
+          >
+            <Newspaper />
+            <div className="mx-2 truncate overflow-hidden text-ellipsis text-left w-full">
+              {title}
+            </div>
+            <Pin />
+          </Button>
+        ))}
+
+      {list()
+        .filter(({ isPinned }) => !isPinned)
+        .map(({ id, title, isSelected }) => (
+          <Button
+            variant={isSelected ? 'secondary' : 'ghost'}
+            className="w-full justify-start"
+            key={id}
+            onClick={() => changeSelection(id)}
+          >
+            <Newspaper />
+            <span className="ml-2 truncate overflow-hidden text-ellipsis">
+              {title}
+            </span>
+          </Button>
+        ))}
     </nav>
   )
 }

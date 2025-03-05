@@ -9,6 +9,7 @@ type PanelState = {
   article: string
   conversation: Message[]
   isSelected: boolean
+  isPinned: boolean
 }
 
 export type Message = {
@@ -17,14 +18,23 @@ export type Message = {
 }
 
 type PanelContextType = {
+  id: string
   article: string
   conversation: Message[]
+  isPinned: boolean
   addMessage: (message: Message) => void
   updateArticle: (article: string) => void
   updateTitle: (title: string) => void
   create: (title: string) => void
   removeCurrent: () => void
-  list: () => { id: string; title: string; isSelected: boolean }[]
+  list: () => {
+    id: string
+    title: string
+    isSelected: boolean
+    isPinned: boolean
+  }[]
+  pin: () => void
+  unpin: () => void
   changeSelection: (id: string) => void
 }
 
@@ -38,13 +48,18 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
       article: '',
       conversation: [],
       isSelected: true,
+      isPinned: false,
     },
   ])
+
+  const id = panel.find(({ isSelected }) => isSelected)?.id ?? ''
 
   const article = panel.find((content) => content.isSelected)?.article ?? ''
 
   const conversation =
     panel.find((content) => content.isSelected)?.conversation ?? []
+
+  const isPinned = panel.find(({ isSelected }) => isSelected)?.isPinned ?? false
 
   const addMessage = (message: Message) => {
     setPanel((prev) =>
@@ -77,7 +92,14 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
   const create = (title: string) => {
     setPanel((prev) => [
       ...prev.map((content) => ({ ...content, isSelected: false })),
-      { id: uuidv4(), title, article: '', conversation: [], isSelected: true },
+      {
+        id: uuidv4(),
+        title,
+        article: '',
+        conversation: [],
+        isSelected: true,
+        isPinned: false,
+      },
     ])
   }
 
@@ -90,6 +112,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
           article: '',
           conversation: [],
           isSelected: true,
+          isPinned: false,
         },
       ])
     } else {
@@ -102,11 +125,30 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
   }
 
   const list = () => {
-    return panel.map(({ id, title, isSelected }) => ({
+    return panel.map(({ id, title, isSelected, isPinned }) => ({
       id,
       title,
       isSelected,
+      isPinned,
     }))
+  }
+
+  const pin = () => {
+    setPanel((prev) =>
+      prev.map((content) => ({
+        ...content,
+        ...(content.id === id ? { isPinned: true } : {}),
+      }))
+    )
+  }
+
+  const unpin = () => {
+    setPanel((prev) =>
+      prev.map((content) => ({
+        ...content,
+        ...(content.id === id ? { isPinned: false } : {}),
+      }))
+    )
   }
 
   const changeSelection = (id: string) => {
@@ -118,14 +160,18 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
   return (
     <PanelContext.Provider
       value={{
+        id,
         article,
         conversation,
+        isPinned,
         addMessage,
         updateArticle,
         updateTitle,
         create,
         removeCurrent,
         list,
+        pin,
+        unpin,
         changeSelection,
       }}
     >

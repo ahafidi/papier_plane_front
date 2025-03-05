@@ -23,16 +23,14 @@ export function ChatPanel() {
       }
     }, 1000)
 
+    if (scrollableDivRef.current) {
+      scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight
+    }
+
     return () => clearTimeout(timeoutID)
   }, [conversation])
 
   const scrollableDivRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (scrollableDivRef.current) {
-      scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight
-    }
-  }, [conversation])
 
   const handleMessageReceived = (
     message: string,
