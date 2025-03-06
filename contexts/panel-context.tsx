@@ -22,17 +22,17 @@ type PanelContextType = {
   article: string
   conversation: Message[]
   isPinned: boolean
-  addMessage: (message: Message) => void
-  updateArticle: (article: string) => void
-  updateTitle: (title: string) => void
-  create: (title: string) => void
-  removeCurrent: () => void
-  list: () => {
+  list: {
     id: string
     title: string
     isSelected: boolean
     isPinned: boolean
   }[]
+  addMessage: (message: Message) => void
+  updateArticle: (article: string) => void
+  updateTitle: (title: string) => void
+  create: (title: string) => void
+  removeCurrent: () => void
   pin: () => void
   unpin: () => void
   changeSelection: (id: string) => void
@@ -60,6 +60,13 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
     panel.find((content) => content.isSelected)?.conversation ?? []
 
   const isPinned = panel.find(({ isSelected }) => isSelected)?.isPinned ?? false
+
+  const list = panel.map(({ id, title, isSelected, isPinned }) => ({
+    id,
+    title,
+    isSelected,
+    isPinned,
+  }))
 
   const addMessage = (message: Message) => {
     setPanel((prev) =>
@@ -124,15 +131,6 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const list = () => {
-    return panel.map(({ id, title, isSelected, isPinned }) => ({
-      id,
-      title,
-      isSelected,
-      isPinned,
-    }))
-  }
-
   const pin = () => {
     setPanel((prev) =>
       prev.map((content) => ({
@@ -164,12 +162,12 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
         article,
         conversation,
         isPinned,
+        list,
         addMessage,
         updateArticle,
         updateTitle,
         create,
         removeCurrent,
-        list,
         pin,
         unpin,
         changeSelection,

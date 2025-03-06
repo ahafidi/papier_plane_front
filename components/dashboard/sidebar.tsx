@@ -1,11 +1,22 @@
-import { Newspaper, Pin, SquarePen } from 'lucide-react'
-
 import { SearchForm } from '@/components/search-form'
+import { Button } from '@/components/ui/button'
 import { usePanel } from '@/contexts/panel-context'
-import { Button } from '../ui/button'
+import { Newspaper, Pin, SquarePen } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 export function Sidebar() {
   const { create, list, changeSelection } = usePanel()
+
+  const [search, setSearch] = useState('')
+  const [filteredList, setFilteredList] = useState(list)
+
+  useEffect(() => {
+    setFilteredList(
+      list.filter((article) =>
+        article.title.toLowerCase().includes(search.toLowerCase())
+      )
+    )
+  }, [list, search])
 
   return (
     <nav className="flex h-full flex-col gap-4 p-6">
@@ -13,9 +24,14 @@ export function Sidebar() {
         <SquarePen className="h-4 w-4" /> Start a new article
       </Button>
 
-      <SearchForm />
+      <SearchForm
+        value={search}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setSearch(e.target.value)
+        }}
+      />
 
-      {list()
+      {filteredList
         .filter(({ isPinned }) => isPinned)
         .map(({ id, title, isSelected }) => (
           <Button
@@ -32,7 +48,7 @@ export function Sidebar() {
           </Button>
         ))}
 
-      {list()
+      {filteredList
         .filter(({ isPinned }) => !isPinned)
         .map(({ id, title, isSelected }) => (
           <Button

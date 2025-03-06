@@ -18,8 +18,6 @@ export function ChatInput({
   const eventSourceRef = useRef<EventSource | null>(null)
   const accumulatedResponseRef = useRef('')
 
-  const numberChunkRef = useRef(0)
-
   useEffect(() => {
     return () => {
       if (eventSourceRef.current) {
@@ -37,7 +35,6 @@ export function ChatInput({
     try {
       setIsLoading(true)
 
-      // Close any existing EventSource
       if (eventSourceRef.current) {
         eventSourceRef.current.close()
       }
@@ -50,48 +47,30 @@ export function ChatInput({
       )
       eventSourceRef.current = eventSource
 
-      // Reset accumulated response for new conversation
       accumulatedResponseRef.current = ''
-      numberChunkRef.current = 0
 
-      // Register event handlers before assigning to ref to avoid race conditions
       eventSource.onopen = (event) => {
         console.log('SSE connection opened:', event)
-        toast.success('SSE connection opened')
       }
 
       eventSource.addEventListener('message', (event) => {
         try {
-          numberChunkRef.current += 1
-
           if (event.data === '\\n') {
             accumulatedResponseRef.current += '\n'
           } else {
             accumulatedResponseRef.current += event.data
           }
-
-          if (!event.data) {
-            console.log(`Received empty data chunk #${numberChunkRef.current}`)
-            console.log(event)
-          }
         } catch (error) {
-          console.error('Error parsing SSE message:', error)
-          toast.error('Error processing response (sse.onmessage)')
+          console.error('Error parsing (sse.onmessage):', error)
+          toast.error('Error processing response')
           eventSource.close()
           setIsLoading(false)
         }
       })
 
-      eventSource.addEventListener('update', (event) => {
-        console.log('update event received:', event)
-        toast.info('update event received')
-      })
-
       eventSource.addEventListener('done', (event) => {
         console.log('Stream ended event received:', event)
         try {
-          console.log(accumulatedResponseRef.current)
-
           const { message, title, article } = JSON.parse(
             accumulatedResponseRef.current
           )
@@ -104,15 +83,15 @@ export function ChatInput({
             article?.trim() ?? ''
           )
         } catch (error) {
-          console.error('Error parsing SSE message:', error)
-          toast.error('Error processing response (sse.onmessage)')
+          console.error('Error parsing SSE done event:', error)
+          toast.error('Error processing response')
         }
         eventSource.close()
+        eventSourceRef.current = null
         setIsLoading(false)
       })
 
       eventSource.onerror = (err) => {
-        console.log('eventSource.onerror')
         console.log('EventSource error:', err)
         console.log('ReadyState:', eventSource.readyState)
 
@@ -122,14 +101,14 @@ export function ChatInput({
           console.log('Attempting to reconnect')
         }
 
-        toast.error('Connection error - please try again (sse.onerror)')
+        toast.error('Connection error - please try again')
         setIsLoading(false)
         eventSource.close()
         eventSourceRef.current = null
       }
     } catch (error) {
       console.error('Error sending message:', error)
-      toast.error('Failed to send message (catch)')
+      toast.error('Failed to send message')
       setIsLoading(false)
     }
   }, [message, onMessageReceived, onMessageSubmitted])
@@ -179,9 +158,7 @@ export function ChatInput({
         <Button
           className="group cursor-pointer select-none"
           type="submit"
-          disabled={
-            isLoading || !message.trim() /* check if the message is not empty */
-          }
+          disabled={isLoading || !message.trim()}
         >
           {isLoading ? 'Sending...' : 'Send'}
           <Send className="h-6 w-6 transition-transform duration-500 group-hover:-rotate-45 " />

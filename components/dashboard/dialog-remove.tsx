@@ -13,12 +13,14 @@ import {
 } from '@/components/ui/dialog'
 import { usePanel } from '@/contexts/panel-context'
 import { Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 export function DialogRemove() {
   const { removeCurrent } = usePanel()
 
   const handleRemove = () => {
     removeCurrent()
+    toast.info('Article removed')
   }
 
   return (
