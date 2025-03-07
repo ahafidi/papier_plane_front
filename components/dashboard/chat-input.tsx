@@ -2,19 +2,16 @@
 
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { PaperclipIcon, Send } from 'lucide-react'
+import { usePanel } from '@/contexts/panel-context'
+import { LoaderCircle, PaperclipIcon, Send } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-export function ChatInput({
-  onMessageReceived,
-  onMessageSubmitted,
-}: {
-  onMessageReceived: (message: string, title: string, article: string) => void
-  onMessageSubmitted: (message: string) => void
-}) {
+export function ChatInput() {
+  const { addMessage, updateArticle, updateTitle, isLoading, setIsLoading } =
+    usePanel()
+
   const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const eventSourceRef = useRef<EventSource | null>(null)
   const accumulatedResponseRef = useRef('')
 
@@ -29,7 +26,9 @@ export function ChatInput({
   const submitMessage = useCallback(() => {
     if (!message.trim()) return
 
-    onMessageSubmitted(message)
+    addMessage({ message, isBot: false })
+    toast.info('Message sent!')
+
     setMessage('')
 
     try {
@@ -77,11 +76,18 @@ export function ChatInput({
 
           accumulatedResponseRef.current = ''
 
-          onMessageReceived(
-            message?.trim() ?? '',
-            title?.trim() ?? '',
-            article?.trim() ?? ''
-          )
+          addMessage({ message, isBot: true })
+          toast.info('New message from the bot!')
+
+          if (article !== '') {
+            updateArticle(article)
+            toast.success('Article updated!')
+          }
+
+          if (title !== '') {
+            updateTitle(title)
+            toast.success('Title updated!')
+          }
         } catch (error) {
           console.error('Error parsing SSE done event:', error)
           toast.error('Error processing response')
@@ -111,7 +117,7 @@ export function ChatInput({
       toast.error('Failed to send message')
       setIsLoading(false)
     }
-  }, [message, onMessageReceived, onMessageSubmitted])
+  }, [message])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -160,8 +166,17 @@ export function ChatInput({
           type="submit"
           disabled={isLoading || !message.trim()}
         >
-          {isLoading ? 'Sending...' : 'Send'}
-          <Send className="h-6 w-6 transition-transform duration-500 group-hover:-rotate-45 " />
+          {isLoading ? (
+            <>
+              Response loading...
+              <LoaderCircle className="h-6 w-6 animate-spin" />
+            </>
+          ) : (
+            <>
+              Send
+              <Send className="h-6 w-6 transition-transform duration-500 group-hover:-rotate-45 " />
+            </>
+          )}
         </Button>
       </div>
     </form>

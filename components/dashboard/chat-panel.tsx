@@ -2,7 +2,6 @@
 
 import { usePanel } from '@/contexts/panel-context'
 import { useEffect, useRef } from 'react'
-import { toast } from 'sonner'
 import { ChatInput } from './chat-input'
 import { ChatMessage } from './chat-message'
 
@@ -32,31 +31,6 @@ export function ChatPanel() {
 
   const scrollableDivRef = useRef<HTMLDivElement>(null)
 
-  const handleMessageReceived = (
-    message: string,
-    title: string,
-    article: string
-  ) => {
-    addMessage({ message, isBot: true })
-    toast.info('New message from the bot!')
-
-    // Update the article in the context if it's not empty
-    if (article !== '') {
-      updateArticle(article)
-      toast.success('Article updated!')
-    }
-
-    if (title !== '') {
-      updateTitle(title)
-      toast.success('Title updated!')
-    }
-  }
-
-  const handleSubmitMessage = (userMessage: string) => {
-    addMessage({ message: userMessage, isBot: false })
-    toast.info('Message sent!')
-  }
-
   return (
     <aside className="h-full flex flex-col p-4">
       <div ref={scrollableDivRef} className="flex-1 space-y-4 overflow-y-auto">
@@ -65,10 +39,7 @@ export function ChatPanel() {
         ))}
       </div>
 
-      <ChatInput
-        onMessageReceived={handleMessageReceived}
-        onMessageSubmitted={handleSubmitMessage}
-      />
+      <ChatInput />
     </aside>
   )
 }

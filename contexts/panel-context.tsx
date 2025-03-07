@@ -10,6 +10,7 @@ type PanelState = {
   conversation: Message[]
   isSelected: boolean
   isPinned: boolean
+  isLoading: boolean
 }
 
 export type Message = {
@@ -22,11 +23,13 @@ type PanelContextType = {
   article: string
   conversation: Message[]
   isPinned: boolean
+  isLoading: boolean
   list: {
     id: string
     title: string
     isSelected: boolean
     isPinned: boolean
+    isLoading: boolean
   }[]
   addMessage: (message: Message) => void
   updateArticle: (article: string) => void
@@ -36,6 +39,7 @@ type PanelContextType = {
   pin: () => void
   unpin: () => void
   changeSelection: (id: string) => void
+  setIsLoading: (isLoading: boolean) => void
 }
 
 const PanelContext = createContext<PanelContextType | undefined>(undefined)
@@ -49,6 +53,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
       conversation: [],
       isSelected: true,
       isPinned: false,
+      isLoading: false,
     },
   ])
 
@@ -61,11 +66,15 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
 
   const isPinned = panel.find(({ isSelected }) => isSelected)?.isPinned ?? false
 
-  const list = panel.map(({ id, title, isSelected, isPinned }) => ({
+  const isLoading =
+    panel.find((content) => content.isSelected)?.isLoading ?? false
+
+  const list = panel.map(({ id, title, isSelected, isPinned, isLoading }) => ({
     id,
     title,
     isSelected,
     isPinned,
+    isLoading,
   }))
 
   const addMessage = (message: Message) => {
@@ -106,6 +115,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
         conversation: [],
         isSelected: true,
         isPinned: false,
+        isLoading: false,
       },
     ])
   }
@@ -120,6 +130,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
           conversation: [],
           isSelected: true,
           isPinned: false,
+          isLoading: false,
         },
       ])
     } else {
@@ -155,6 +166,15 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
     )
   }
 
+  const setIsLoading = (isLoading: boolean) => {
+    setPanel((prev) =>
+      prev.map((content) => ({
+        ...content,
+        ...(content.id === id ? { isLoading } : {}),
+      }))
+    )
+  }
+
   return (
     <PanelContext.Provider
       value={{
@@ -162,6 +182,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
         article,
         conversation,
         isPinned,
+        isLoading,
         list,
         addMessage,
         updateArticle,
@@ -171,6 +192,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
         pin,
         unpin,
         changeSelection,
+        setIsLoading,
       }}
     >
       {children}

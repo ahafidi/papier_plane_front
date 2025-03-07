@@ -1,7 +1,7 @@
 import { SearchForm } from '@/components/search-form'
 import { Button } from '@/components/ui/button'
 import { usePanel } from '@/contexts/panel-context'
-import { Newspaper, Pin, SquarePen } from 'lucide-react'
+import { LoaderCircle, Newspaper, Pin, SquarePen } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 export function Sidebar() {
@@ -33,7 +33,7 @@ export function Sidebar() {
 
       {filteredList
         .filter(({ isPinned }) => isPinned)
-        .map(({ id, title, isSelected }) => (
+        .map(({ id, title, isSelected, isLoading }) => (
           <Button
             variant={isSelected ? 'secondary' : 'ghost'}
             className="w-full justify-between"
@@ -44,23 +44,25 @@ export function Sidebar() {
             <div className="mx-2 truncate overflow-hidden text-ellipsis text-left w-full">
               {title}
             </div>
+            {isLoading && <LoaderCircle className="h-6 w-6 animate-spin" />}
             <Pin />
           </Button>
         ))}
 
       {filteredList
         .filter(({ isPinned }) => !isPinned)
-        .map(({ id, title, isSelected }) => (
+        .map(({ id, title, isSelected, isLoading }) => (
           <Button
             variant={isSelected ? 'secondary' : 'ghost'}
-            className="w-full justify-start"
+            className="w-full justify-between"
             key={id}
             onClick={() => changeSelection(id)}
           >
             <Newspaper />
-            <span className="ml-2 truncate overflow-hidden text-ellipsis">
+            <div className="mx-2 truncate overflow-hidden text-ellipsis text-left w-full">
               {title}
-            </span>
+            </div>
+            {isLoading && <LoaderCircle className="h-6 w-6 animate-spin" />}
           </Button>
         ))}
     </nav>

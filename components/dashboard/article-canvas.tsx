@@ -7,11 +7,12 @@ import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 // import remarkBreaks from 'remark-breaks'
+import { Skeleton } from '@/components/ui/skeleton'
 import remarkGfm from 'remark-gfm'
 import { ArticleOptions } from './article-options'
 
 export function ArticleCanvas() {
-  const { article } = usePanel()
+  const { article, isLoading } = usePanel()
 
   const [isClient, setIsClient] = useState(false)
 
@@ -85,12 +86,21 @@ export function ArticleCanvas() {
             </ReactMarkdown>
           </article>
         ) : (
-          <div className="text-center text-gray-500 mt-10">
-            <p>
-              No article content yet. Start a conversation to generate an
-              article.
-            </p>
-          </div>
+          <>
+            {!isLoading ? (
+              <div className="text-center text-gray-500 mt-10">
+                No article content yet. Start a conversation to generate an
+                article.
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <Skeleton className="w-1/2 h-10" />
+                <Skeleton className="w-full h-30" />
+                <Skeleton className="w-3/4 h-10" />
+                <Skeleton className="w-full h-15" />
+              </div>
+            )}
+          </>
         )}
       </div>
     </main>
