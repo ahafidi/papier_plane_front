@@ -8,8 +8,14 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 export function ChatInput() {
-  const { addMessage, updateArticle, updateTitle, isLoading, setIsLoading } =
-    usePanel()
+  const {
+    addMessage,
+    updateArticle,
+    updateTitle,
+    streamChunkMessage,
+    isLoading,
+    setIsLoading,
+  } = usePanel()
 
   const [message, setMessage] = useState('')
   const eventSourceRef = useRef<EventSource | null>(null)
@@ -27,7 +33,7 @@ export function ChatInput() {
     if (!message.trim()) return
 
     addMessage({ message, isBot: false })
-    toast.info('Message sent!')
+    addMessage({ message: '', isBot: true })
 
     setMessage('')
 
@@ -56,8 +62,14 @@ export function ChatInput() {
         try {
           if (event.data === '\\n') {
             accumulatedResponseRef.current += '\n'
+            if (accumulatedResponseRef.current.length > 16) {
+              streamChunkMessage(accumulatedResponseRef.current)
+            }
           } else {
             accumulatedResponseRef.current += event.data
+            if (accumulatedResponseRef.current.length > 16) {
+              streamChunkMessage(event.data)
+            }
           }
         } catch (error) {
           console.error('Error parsing (sse.onmessage):', error)
@@ -70,13 +82,10 @@ export function ChatInput() {
       eventSource.addEventListener('done', (event) => {
         console.log('Stream ended event received:', event)
         try {
-          const { message, title, article } = JSON.parse(
-            accumulatedResponseRef.current
-          )
+          const { title, article } = JSON.parse(accumulatedResponseRef.current)
 
           accumulatedResponseRef.current = ''
 
-          addMessage({ message, isBot: true })
           toast.info('New message from the bot!')
 
           if (article !== '') {

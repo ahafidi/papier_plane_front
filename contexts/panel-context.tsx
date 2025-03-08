@@ -32,6 +32,7 @@ type PanelContextType = {
     isLoading: boolean
   }[]
   addMessage: (message: Message) => void
+  streamChunkMessage: (chunk: string) => void
   updateArticle: (article: string) => void
   updateTitle: (title: string) => void
   create: (title: string) => void
@@ -84,6 +85,27 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
           ? { ...content, conversation: [...content.conversation, message] }
           : content
       )
+    )
+  }
+
+  const streamChunkMessage = (chunk: string) => {
+    setPanel((prev) =>
+      prev.map((content) => ({
+        ...content,
+        ...(content.isSelected
+          ? {
+              conversation: [
+                ...content.conversation.slice(0, -1),
+                {
+                  ...content.conversation[content.conversation.length - 1],
+                  message:
+                    content.conversation[content.conversation.length - 1]
+                      .message + chunk,
+                },
+              ],
+            }
+          : {}),
+      }))
     )
   }
 
@@ -185,6 +207,7 @@ export function ArticleProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         list,
         addMessage,
+        streamChunkMessage,
         updateArticle,
         updateTitle,
         create,
