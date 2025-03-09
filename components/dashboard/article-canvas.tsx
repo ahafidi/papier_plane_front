@@ -2,7 +2,7 @@
 'use client'
 
 import { usePanel } from '@/contexts/panel-context'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
@@ -16,16 +16,24 @@ export function ArticleCanvas() {
 
   const [isClient, setIsClient] = useState(false)
 
+  const scrollableDivRef = useRef<HTMLDivElement>(null)
+
   // Handle hydration issues by ensuring we only render on client
   useEffect(() => {
     setIsClient(true)
   }, [])
 
+  useEffect(() => {
+    if (scrollableDivRef.current && article) {
+      scrollableDivRef.current.scrollTop = scrollableDivRef.current.scrollHeight
+    }
+  }, [article, isLoading])
+
   return (
     <main className="h-full flex flex-col p-4">
       <ArticleOptions />
 
-      <div className="flex-1 overflow-y-auto mt-3">
+      <div className="flex-1 overflow-y-auto mt-3" ref={scrollableDivRef}>
         {isClient && article ? (
           <article className="prose prose-slate dark:prose-invert max-w-none">
             <ReactMarkdown

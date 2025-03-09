@@ -1,5 +1,5 @@
+import { Skeleton } from '@/components/ui/skeleton'
 import { Bot, User } from 'lucide-react'
-
 interface ChatMessageProps {
   message: string
   isBot?: boolean
@@ -20,9 +20,11 @@ export function ChatMessage({ message, isBot = false }: ChatMessageProps) {
       </div>
 
       <div
-        className={`flex flex-col gap-2 rounded-lg p-5 ${isBot ? 'bg-primary/10' : 'bg-muted'}`}
-        dangerouslySetInnerHTML={{ __html: formattedMessage }}
-      ></div>
+        className={`flex flex-col gap-2 rounded-lg p-4 w-full ${isBot ? 'bg-primary/10' : 'bg-muted'}`}
+      >
+        {formattedMessage === '' && <Skeleton className="w-30 h-5" />}
+        <div dangerouslySetInnerHTML={{ __html: formattedMessage }} />
+      </div>
     </div>
   )
 }

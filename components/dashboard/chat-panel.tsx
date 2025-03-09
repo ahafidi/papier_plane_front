@@ -8,6 +8,8 @@ import { ChatMessage } from './chat-message'
 export function ChatPanel() {
   const { conversation, addMessage, updateArticle, updateTitle } = usePanel()
 
+  const scrollableDivRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     const timeoutID = setTimeout(() => {
       if (conversation.length === 0) {
@@ -28,8 +30,6 @@ export function ChatPanel() {
 
     return () => clearTimeout(timeoutID)
   }, [conversation])
-
-  const scrollableDivRef = useRef<HTMLDivElement>(null)
 
   return (
     <aside className="h-full flex flex-col p-4">

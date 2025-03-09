@@ -12,7 +12,7 @@ export function ChatInput() {
     addMessage,
     updateArticle,
     updateTitle,
-    streamChunkMessage,
+    updateLastMessage,
     isLoading,
     setIsLoading,
   } = usePanel()
@@ -34,6 +34,8 @@ export function ChatInput() {
 
     addMessage({ message, isBot: false })
     addMessage({ message: '', isBot: true })
+
+    toast.info('New message from the bot!')
 
     setMessage('')
 
@@ -62,17 +64,44 @@ export function ChatInput() {
         try {
           if (event.data === '\\n') {
             accumulatedResponseRef.current += '\n'
-            if (accumulatedResponseRef.current.length > 16) {
-              streamChunkMessage(accumulatedResponseRef.current)
-            }
           } else {
             accumulatedResponseRef.current += event.data
-            if (accumulatedResponseRef.current.length > 16) {
-              streamChunkMessage(event.data)
+          }
+
+          if (accumulatedResponseRef.current.includes('"message"')) {
+            const messageMatch = accumulatedResponseRef.current.match(
+              /"message"\s*:\s*"([^"]*)"?/
+            )
+            if (messageMatch && messageMatch[1]) {
+              updateLastMessage(messageMatch[1])
+            }
+          }
+
+          if (accumulatedResponseRef.current.includes('"article"')) {
+            const articleMatch = accumulatedResponseRef.current.match(
+              /"article"\s*:\s*"([^"]*)"?/
+            )
+            if (articleMatch && articleMatch[1]) {
+              const processedArticle = articleMatch[1]
+                .replace(/\\n/g, '\n')
+                .replace(/\\"/g, '"')
+                .replace(/\\\\/g, '\\')
+                .replace(/\\t/g, '\t')
+                .replace(/\\r/g, '\r')
+              updateArticle(processedArticle)
+            }
+          }
+
+          if (accumulatedResponseRef.current.includes('"title"')) {
+            const titleMatch = accumulatedResponseRef.current.match(
+              /"title"\s*:\s*"([^"]*)"?/
+            )
+            if (titleMatch && titleMatch[1]) {
+              updateTitle(titleMatch[1])
             }
           }
         } catch (error) {
-          console.error('Error parsing (sse.onmessage):', error)
+          console.error('Error processing message chunk:', error)
           toast.error('Error processing response')
           eventSource.close()
           setIsLoading(false)
@@ -82,23 +111,27 @@ export function ChatInput() {
       eventSource.addEventListener('done', (event) => {
         console.log('Stream ended event received:', event)
         try {
-          const { title, article } = JSON.parse(accumulatedResponseRef.current)
+          const { message, article, title } = JSON.parse(
+            accumulatedResponseRef.current
+          )
+
+          if (message && message.trim() !== '') {
+            updateLastMessage(message)
+          }
+
+          if (article && article.trim() !== '') {
+            updateArticle(article)
+          }
+
+          if (title && title.trim() !== '') {
+            updateTitle(title)
+          }
+
+          toast.success('Article updated!')
 
           accumulatedResponseRef.current = ''
-
-          toast.info('New message from the bot!')
-
-          if (article !== '') {
-            updateArticle(article)
-            toast.success('Article updated!')
-          }
-
-          if (title !== '') {
-            updateTitle(title)
-            toast.success('Title updated!')
-          }
         } catch (error) {
-          console.error('Error parsing SSE done event:', error)
+          console.error('Error processing done event:', error)
           toast.error('Error processing response')
         }
         eventSource.close()
