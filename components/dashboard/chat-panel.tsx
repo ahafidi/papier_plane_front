@@ -14,9 +14,7 @@ export function ChatPanel() {
     const timeoutID = setTimeout(() => {
       if (conversation.length === 0) {
         addMessage({
-          message: `Hello ahafidi,
-
-            Welcome! I hope you're doing well.
+          message: `Welcome ahafidi! I hope you're doing well.
 
             Please provide me with some instructions, such as key facts, style guidelines, and context, so I can start drafting your article. =)`,
           isBot: true,
