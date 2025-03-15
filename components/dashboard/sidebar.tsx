@@ -39,6 +39,7 @@ export function Sidebar() {
             className="w-full justify-between"
             key={id}
             onClick={() => changeSelection(id)}
+            data-testid={`pinned-article-${id}`}
           >
             <Newspaper />
             <div className="mx-2 truncate overflow-hidden text-ellipsis text-left w-full">
@@ -57,6 +58,7 @@ export function Sidebar() {
             className="w-full justify-between"
             key={id}
             onClick={() => changeSelection(id)}
+            data-testid={`unpinned-article-${id}`}
           >
             <Newspaper />
             <div className="mx-2 truncate overflow-hidden text-ellipsis text-left w-full">
