@@ -51,10 +51,14 @@ export function ArticleCanvas() {
                 value={article}
                 onChange={handleMarkdownChange}
                 placeholder="Start writing your article here..."
+                data-testid="markdown-input"
               />
             </TabsContent>
             <TabsContent value="preview" className="h-full">
-              <article className="prose prose-slate dark:prose-invert max-w-none">
+              <article
+                className="prose prose-slate dark:prose-invert max-w-none"
+                data-testid="preview-output"
+              >
                 {article === '' ? (
                   <div className="text-center text-gray-500 mt-10">
                     No article content yet. Start a conversation to generate an
