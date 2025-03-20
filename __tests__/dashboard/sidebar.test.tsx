@@ -93,4 +93,13 @@ describe('Dashboard Sidebar', () => {
     expect(articles[0].textContent).toBe('pinned article')
     expect(articles[0].getAttribute('data-testid')).toBe('pinned-article-3')
   })
+
+  test('should create a new article when the user clicks on the "Start a new article" button', () => {
+    render(<Sidebar />)
+
+    const newArticleButton = screen.getByText('Start a new article')
+    fireEvent.click(newArticleButton)
+
+    expect(usePanel().create).toHaveBeenCalledWith('New article')
+  })
 })
