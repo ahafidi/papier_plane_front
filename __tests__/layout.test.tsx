@@ -1,3 +1,4 @@
+import { AuthNav } from '@/components/auth-nav'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { render, screen } from '@testing-library/react'
@@ -11,6 +12,20 @@ describe('Global Layout', () => {
     expect(brand).toBeDefined()
     expect(brand.closest('a')).not.toBeNull()
     expect(brand.closest('a')?.getAttribute('href')).toBe('/')
+  })
+
+  test('should render the customer portal properly', () => {
+    render(<AuthNav />)
+
+    const loginButton = screen.getByText('Sign In')
+    expect(loginButton).toBeDefined()
+    expect(loginButton.closest('a')).not.toBeNull()
+    expect(loginButton.closest('a')?.getAttribute('href')).toBe('/signin')
+
+    const signupButton = screen.getByText('Sign Up')
+    expect(signupButton).toBeDefined()
+    expect(signupButton.closest('a')).not.toBeNull()
+    expect(signupButton.closest('a')?.getAttribute('href')).toBe('/signup')
   })
 
   test('should render the footer properly', () => {
