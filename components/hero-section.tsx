@@ -12,8 +12,8 @@ export function HeroSection() {
           <div className="flex items-center gap-2 text-xl font-semibold">
             <PapierPlaneBrand />
           </div>
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
-            Write Better Articles, <span className="text-primary">Faster</span>
+          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl bg-gradient-to-r from-blue-400 via-indigo-400 to-gray-900 dark:from-blue-400 dark:via-indigo-400 dark:to-gray-100 bg-clip-text text-transparent">
+            Write Better Articles, Faster!
           </h1>
           <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
             The AI-powered writing assistant designed specifically for
