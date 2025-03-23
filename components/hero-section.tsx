@@ -20,7 +20,7 @@ export function HeroSection() {
             journalists. Transform your workflow and create compelling stories
             with ease.
           </p>
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl bg-gradient-to-r to-blue-400 via-indigo-400 from-gray-900 dark:to-blue-400 dark:via-indigo-400 dark:from-gray-100 bg-clip-text text-transparent">
             Ready to Transform Your Writing?
           </h2>
           <Link
