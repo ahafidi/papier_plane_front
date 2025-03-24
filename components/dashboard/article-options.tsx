@@ -30,11 +30,11 @@ export function ArticleOptions({
         className="select-none flex flex-row items-center gap-2"
       >
         <TabsList>
-          <TabsTrigger value="markdown">
+          <TabsTrigger value="markdown" className="cursor-pointer">
             <CodeIcon />
             Markdown
           </TabsTrigger>
-          <TabsTrigger value="preview">
+          <TabsTrigger value="preview" className="cursor-pointer">
             <AppWindowIcon />
             Preview
           </TabsTrigger>

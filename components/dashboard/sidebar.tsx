@@ -20,7 +20,11 @@ export function Sidebar() {
 
   return (
     <nav className="flex h-full flex-col gap-4 p-6">
-      <Button variant="outline" onClick={() => create('New article')}>
+      <Button
+        variant="outline"
+        onClick={() => create('New article')}
+        className="cursor-pointer"
+      >
         <SquarePen className="h-4 w-4" /> Start a new article
       </Button>
 
@@ -36,10 +40,11 @@ export function Sidebar() {
         .map(({ id, title, isSelected, isLoading }) => (
           <Button
             variant={isSelected ? 'secondary' : 'ghost'}
-            className="w-full justify-between"
+            className="w-full justify-between cursor-pointer"
             key={id}
             onClick={() => changeSelection(id)}
             data-testid={`pinned-article-${id}`}
+            suppressHydrationWarning
           >
             <Newspaper />
             <div className="mx-2 truncate overflow-hidden text-ellipsis text-left w-full">
@@ -55,10 +60,11 @@ export function Sidebar() {
         .map(({ id, title, isSelected, isLoading }) => (
           <Button
             variant={isSelected ? 'secondary' : 'ghost'}
-            className="w-full justify-between"
+            className="w-full justify-between cursor-pointer"
             key={id}
             onClick={() => changeSelection(id)}
             data-testid={`unpinned-article-${id}`}
+            suppressHydrationWarning
           >
             <Newspaper />
             <div className="mx-2 truncate overflow-hidden text-ellipsis text-left w-full">
